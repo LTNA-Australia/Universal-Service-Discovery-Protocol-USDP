@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+registry/data/
+local_agent/**/state/
+demo_setups/runtime/
+demo_setups/**/state/
+deployment/runtime/
+.tmp/

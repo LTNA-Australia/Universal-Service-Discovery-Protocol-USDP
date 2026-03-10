@@ -1,0 +1,73 @@
+{
+  "registry_url": "http://127.0.0.1:8000",
+  "publisher_token": "dev-token",
+  "publisher_name": "branch-gateway-1",
+  "protocol_version": "2.0",
+  "state_file": "state/agent_state.json",
+  "report_file": "state/agent_report.json",
+  "cycle_interval_seconds": 30,
+  "plugins": {
+    "printer": {
+      "devices": [
+        {
+          "name": "Office Printer A",
+          "endpoint_url": "ipp://192.168.1.40/printers/office-a",
+          "color": true,
+          "duplex": true,
+          "supported_paper_sizes": ["A4", "Letter"],
+          "print_protocols": ["ipp"],
+          "location": {
+            "site": "HQ",
+            "area": "Front Office"
+          }
+        }
+      ]
+    },
+    "api": {
+      "services": [
+        {
+          "name": "Inventory API",
+          "base_url": "http://127.0.0.1:9000",
+          "health_endpoint": "/health",
+          "auth_type": "bearer",
+          "version": "2026.03",
+          "supported_protocols": ["http"]
+        }
+      ]
+    },
+    "camera": {
+      "devices": [
+        {
+          "name": "Warehouse Camera 12",
+          "endpoint_url": "rtsp://192.168.1.60:554/live",
+          "stream_protocols": ["rtsp"],
+          "resolution": "1920x1080",
+          "night_vision": true,
+          "ptz": true,
+          "location": {
+            "site": "HQ",
+            "area": "Warehouse"
+          }
+        }
+      ]
+    },
+    "sensor": {
+      "devices": [
+        {
+          "name": "Warehouse Temperature Sensor",
+          "endpoint_url": "http://127.0.0.1:9110/telemetry",
+          "sensor_kind": "temperature",
+          "measurement_types": ["temperature", "humidity"],
+          "sampling_interval_ms": 5000,
+          "units": "celsius",
+          "battery_powered": true,
+          "location_scope": "aisle",
+          "location": {
+            "site": "HQ",
+            "area": "Warehouse"
+          }
+        }
+      ]
+    }
+  }
+}

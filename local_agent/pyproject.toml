@@ -1,0 +1,15 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "usdp-local-agent"
+version = "0.1.0"
+description = "USDP v2 local agent"
+requires-python = ">=3.11"
+
+[project.scripts]
+usdp-agent = "usdp_agent.main:main"
+
+[tool.setuptools]
+packages = ["usdp_agent", "usdp_agent.plugins"]

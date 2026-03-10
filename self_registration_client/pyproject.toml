@@ -1,0 +1,15 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "usdp-self-registration-client"
+version = "0.1.0"
+description = "USDP v2 self-registration client"
+requires-python = ">=3.11"
+
+[project.scripts]
+usdp-client = "usdp_client.main:main"
+
+[tool.setuptools]
+packages = ["usdp_client"]

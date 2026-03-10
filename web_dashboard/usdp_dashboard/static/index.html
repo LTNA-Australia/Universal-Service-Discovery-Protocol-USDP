@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>USDP Dashboard</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-copy">
+          <p class="eyebrow">Universal Service Discovery Protocol</p>
+          <h1>Operator Console</h1>
+          <p class="topbar-copy">Registry monitoring, discovery, and record inspection for operational teams.</p>
+        </div>
+      </div>
+      <div class="topbar-actions">
+        <span class="badge" id="protocolBadge">Protocol loading</span>
+        <span class="badge" id="adminBadge">Admin disabled</span>
+        <button id="refreshButton" type="button">Refresh</button>
+      </div>
+    </header>
+
+    <section class="status-strip panel">
+      <div class="status-main">
+        <div class="health-label">Registry</div>
+        <div class="health-value" id="healthStatus">Loading</div>
+        <div class="health-meta" id="healthMeta">Connecting to registry</div>
+      </div>
+      <dl class="health-breakdown" id="healthBreakdown">
+        <div><dt>Active</dt><dd>-</dd></div>
+        <div><dt>Stale</dt><dd>-</dd></div>
+        <div><dt>Withdrawn</dt><dd>-</dd></div>
+        <div><dt>Federated</dt><dd>-</dd></div>
+      </dl>
+    </section>
+
+    <section id="errorBanner" class="error-banner hidden" aria-live="polite"></section>
+
+    <main class="workspace">
+      <aside class="filters panel">
+        <div class="sidebar-header">
+          <h2>Search And Filters</h2>
+          <p>All current query controls remain available here, including Advanced Criteria JSON and Capability Field filtering.</p>
+        </div>
+
+        <section class="filter-group">
+          <h3>Service Query</h3>
+          <div class="controls">
+            <label>
+              <span>Name</span>
+              <input id="nameFilter" type="text" placeholder="Inventory, printer, sensor">
+            </label>
+            <label>
+              <span>Type</span>
+              <select id="typeFilter">
+                <option value="">All</option>
+                <option value="api">API</option>
+                <option value="printer">Printer</option>
+                <option value="camera">Camera</option>
+                <option value="database">Database</option>
+                <option value="ai_model_endpoint">AI model endpoint</option>
+                <option value="storage">Storage</option>
+                <option value="message_broker">Message broker</option>
+                <option value="sensor">Sensor</option>
+              </select>
+            </label>
+            <label>
+              <span>Status</span>
+              <select id="statusFilter">
+                <option value="">Any</option>
+                <option value="online">Online</option>
+                <option value="degraded">Degraded</option>
+                <option value="offline">Offline</option>
+                <option value="unknown">Unknown</option>
+              </select>
+            </label>
+            <label>
+              <span>Results per page</span>
+              <select id="pageSizeFilter">
+                <option value="10">10</option>
+                <option value="25" selected>25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+              </select>
+            </label>
+            <label class="checkbox wide">
+              <input id="inactiveFilter" type="checkbox">
+              <span>Include inactive</span>
+            </label>
+          </div>
+        </section>
+
+        <section class="filter-group">
+          <h3>Location And Tags</h3>
+          <div class="controls">
+            <label>
+              <span>Site</span>
+              <input id="siteFilter" type="text" placeholder="HQ, warehouse">
+            </label>
+            <label>
+              <span>Area</span>
+              <input id="areaFilter" type="text" placeholder="Front office">
+            </label>
+            <label class="wide">
+              <span>Tag</span>
+              <input id="tagFilter" type="text" placeholder="critical, public">
+            </label>
+          </div>
+        </section>
+
+        <section class="filter-group">
+          <h3>Capability Match</h3>
+          <div class="controls">
+            <label>
+              <span>Capability Field</span>
+              <input id="capabilityFieldFilter" type="text" placeholder="capabilities.engine">
+            </label>
+            <label>
+              <span>Capability Value</span>
+              <input id="capabilityValueFilter" type="text" placeholder="postgresql, true, 32">
+            </label>
+          </div>
+        </section>
+
+        <section class="filter-group">
+          <h3>Advanced Criteria JSON (v2)</h3>
+          <div class="controls">
+            <label class="wide">
+              <span>Advanced Criteria JSON (v2)</span>
+              <textarea id="criteriaFilter" rows="6" placeholder='{"all":[{"field":"service_type","op":"eq","value":"database"}]}'></textarea>
+            </label>
+          </div>
+        </section>
+      </aside>
+
+      <div class="main-column">
+        <section class="inventory panel">
+          <div class="panel-toolbar">
+            <div>
+              <h2>Service Inventory</h2>
+              <span id="serviceCount">0 results</span>
+            </div>
+            <div class="pager">
+              <button id="prevPageButton" type="button">Previous</button>
+              <span id="pageIndicator">Page 1 of 1</span>
+              <button id="nextPageButton" type="button">Next</button>
+            </div>
+          </div>
+          <div class="service-table-head">
+            <span>Service</span>
+            <span>Type</span>
+            <span>Location</span>
+            <span>Endpoint</span>
+            <span>Status</span>
+          </div>
+          <div id="serviceList" class="service-list"></div>
+        </section>
+
+        <section class="inspector panel">
+          <div class="panel-toolbar">
+            <div>
+              <h2>Service Inspector</h2>
+              <span id="detailStatus">Select a service</span>
+            </div>
+          </div>
+          <div id="detailView" class="detail-view empty">Choose a service from the list to inspect its full record.</div>
+        </section>
+      </div>
+    </main>
+
+    <section class="ops-grid">
+      <section class="panel operations-panel" id="operationsPanel">
+        <div class="panel-toolbar">
+          <div>
+            <h2>Operations</h2>
+            <span id="operationsStatus">Admin views unavailable</span>
+          </div>
+          <button id="purgeButton" type="button" disabled>Purge Due Records</button>
+        </div>
+        <div id="operationsSummary" class="detail-grid">
+          <div class="detail-card"><span class="label">Metrics</span><span class="value">No admin token</span></div>
+        </div>
+      </section>
+
+      <section class="panel audit-panel">
+        <div class="panel-toolbar">
+          <div>
+            <h2>Recent Audit</h2>
+            <span id="auditStatus">No audit data</span>
+          </div>
+        </div>
+        <div id="auditList" class="audit-list empty">Configure `USDP_ADMIN_TOKEN` to enable audit and retention views.</div>
+      </section>
+    </section>
+  </div>
+
+  <template id="serviceItemTemplate">
+    <button class="service-item" type="button">
+      <div class="service-primary">
+        <strong class="service-name"></strong>
+        <div class="service-tags"></div>
+      </div>
+      <span class="service-type"></span>
+      <span class="service-location"></span>
+      <span class="service-endpoint"></span>
+      <span class="service-status"></span>
+    </button>
+  </template>
+
+  <script src="app.js"></script>
+</body>
+</html>
