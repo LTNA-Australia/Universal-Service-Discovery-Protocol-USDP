@@ -150,3 +150,7 @@ If you need protocol rules, field definitions, lifecycle semantics, example payl
 ## License
 
 This repository is licensed under the terms in [`LICENSE`](LICENSE).
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/image?repos=LTNA-Australia/Universal-Service-Discovery-Protocol-USDP&type=date&legend=top-left)](https://www.star-history.com/?repos=LTNA-Australia%2FUniversal-Service-Discovery-Protocol-USDP&type=date&legend=top-left)
